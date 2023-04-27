@@ -3,12 +3,13 @@ const resultElem = document.getElementById('activity');
 const musicElem = document.getElementById('music');
 const activityQueryURLBase = "http://www.boredapi.com/api/activity?type=";
 let activityQueryURL;
+let activityType;
 let activity;
 
 //searchbox listener
 searchBox.onsubmit = (ev) => {
   ev.preventDefault();
-  let activityType = ev.srcElement.children[0].value.toLowerCase(); // get search input
+  activityType = ev.srcElement.children[0].value.toLowerCase(); // get search input
   ev.srcElement.children[0].value = '';                             // clear search input
   activityQueryURL = activityQueryURLBase + activityType;           // assemble boredAPI request
 
@@ -30,4 +31,5 @@ boredapiRequest.addEventListener("load", function (ev) { //step 1
   } else {
     resultElem.innerText = "Oops! That's not a valid type!";
   }
+  
 });

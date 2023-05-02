@@ -1,6 +1,7 @@
 const searchBox = document.getElementById('top-search');
 const resultElem = document.getElementById('activity');
-const musicElem = document.getElementById('music');
+const playlistImgElem = document.getElementById('playlist-img');
+const playlistLinkElem = document.getElementById('playlist-link');
 const activityQueryURLBase = "http://www.boredapi.com/api/activity?type=";
 const typeIdPair = {"education": "0vvXsWCC9xrXsKd4FyS8kM", "recreational": "37i9dQZF1DXdxcBWuJkbcy", "social": "37i9dQZF1EIdzRg9sDFEY3", 
 "diy": "53d3oOp9lF6uXrG5jFLRqC", "charity": "37i9dQZF1EIgbU0EpV42y4", "cooking": "37i9dQZF1EIcPqD4jq1AIu", 
@@ -63,15 +64,15 @@ async function spotifyapiRequest() {
   }
 
   const data = await response.json();
-  // playlist name = data.name
-  // playlist link = data.external_urls.spotify
-  // playlist img url = data.images[0].url
+  playlistImgElem.src = data.images [0].url;
+  playlistLinkElem.href = data.external_urls.spotify;
+  playlistLinkElem.className = "";
 }
 
 
 const clientId = '62183f2ce9324f4abbd4c638748fa7bf';
-const redirectUri = 'http://localhost:5500';
-// const redirectUri = 'https://zorgusn.github.io/343p3-BoredSpotify/';
+// const redirectUri = 'http://localhost:5500';
+const redirectUri = 'https://zorgusn.github.io/343p3-BoredSpotify/';
 
 
 

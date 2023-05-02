@@ -1,9 +1,20 @@
+.types {
+    position: absolute;
+    top: 60px;
+    right: 1vw;
+    width: fit-content;
+}
 .resultbox {
-
+    height: 50%;
+    display:flex;
+    justify-content: space-evenly;
+    align-items: center;
 }
 .activity {
-
+    height: 100%;
+    width: 50%;
 }
 .music {
-    
+    height: 100%;
+    width: 50%;
 }

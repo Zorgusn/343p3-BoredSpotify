@@ -18,63 +18,55 @@ searchBox.onsubmit = (ev) => {
   ev.srcElement.children[0].value = '';                             // clear search input
 
   //bored api request
-  if (activityType) { 
-    boredapiRequest.open('GET', `${activityQueryURLBase}${activityType}`);
-    boredapiRequest.send();
-  }
-  // setTimeout(() => {console.log(activity)}, 25);
-
+  boredapiRequest();
 }
 
-const boredapiRequest = new XMLHttpRequest();
-boredapiRequest.addEventListener("load", function (ev) { //step 1
-  const structuredData = JSON.parse(ev.target.responseText);
+async function boredapiRequest() {
+  data = await fetch(`${activityQueryURLBase}${activityType}`);
+  const structuredData = await data.json();
   activity = structuredData.activity;
   if (activity) {
     resultElem.innerText = activity + "!";
   } else {
     resultElem.innerText = "Oops! That's not a valid type!";
   }
-
   spotifyapiRequest();
-});
+}
 
 async function spotifyapiRequest() {
-  activityType === 'education' ? spotifyReqID = typeIdPair.education :
-  activityType === 'recreational' ? spotifyReqID = typeIdPair.recreational :
-  activityType === 'social' ? spotifyReqID = typeIdPair.social :
-  activityType === 'diy' ? spotifyReqID = typeIdPair.diy :
-  activityType === 'charity' ? spotifyReqID = typeIdPair.charity :
-  activityType === 'cooking' ? spotifyReqID = typeIdPair.cooking :
-  activityType === 'relaxation' ? spotifyReqID = typeIdPair.relaxation :
-  activityType === 'music' ? spotifyReqID = typeIdPair.music :
-  activityType === 'busywork' ? spotifyReqID = typeIdPair.busywork : 0;
+  (activityType === 'education') ? spotifyReqID = typeIdPair.education :
+  (activityType === 'recreational') ? spotifyReqID = typeIdPair.recreational :
+  (activityType === 'social') ? spotifyReqID = typeIdPair.social :
+  (activityType === 'diy') ? spotifyReqID = typeIdPair.diy :
+  (activityType === 'charity') ? spotifyReqID = typeIdPair.charity :
+  (activityType === 'cooking') ? spotifyReqID = typeIdPair.cooking :
+  (activityType === 'relaxation') ? spotifyReqID = typeIdPair.relaxation :
+  (activityType === 'music') ? spotifyReqID = typeIdPair.music :
+  (activityType === 'busywork') ? spotifyReqID = typeIdPair.busywork : 0;
 
   authToken = localStorage.getItem('access_token');
   let response;
 
-  if (authToken) {
+
   response = await fetch(`${"https://api.spotify.com/v1/playlists/"}${spotifyReqID}`, {
     headers: {
       Authorization: 'Bearer ' + authToken
     }
   });
-  } else {
-    console.log("bad auth token");
-  }
+
 
   const data = await response.json();
-  playlistImgElem.src = data.images [0].url;
+  playlistImgElem.src = data.images[0].url;
   playlistLinkElem.href = data.external_urls.spotify;
   playlistLinkElem.className = "";
 }
 
 
+// EVERYTHING BELOW THIS POINT IS SPOTIFY AUTH CODE GENERATION
+
 const clientId = '62183f2ce9324f4abbd4c638748fa7bf';
 // const redirectUri = 'http://localhost:5500';
 const redirectUri = 'https://zorgusn.github.io/343p3-BoredSpotify/';
-
-
 
 const urlParams = new URLSearchParams(window.location.search);
 let code = urlParams.get('code');

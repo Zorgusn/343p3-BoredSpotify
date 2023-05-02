@@ -2,7 +2,7 @@ const searchBox = document.getElementById('top-search');
 const resultElem = document.getElementById('activity');
 const playlistImgElem = document.getElementById('playlist-img');
 const playlistLinkElem = document.getElementById('playlist-link');
-const activityQueryURLBase = "http://www.boredapi.com/api/activity?type=";
+const activityQueryURLBase = "https://www.boredapi.com/api/activity?type=";
 const typeIdPair = {"education": "0vvXsWCC9xrXsKd4FyS8kM", "recreational": "37i9dQZF1DXdxcBWuJkbcy", "social": "37i9dQZF1EIdzRg9sDFEY3", 
 "diy": "53d3oOp9lF6uXrG5jFLRqC", "charity": "37i9dQZF1EIgbU0EpV42y4", "cooking": "37i9dQZF1EIcPqD4jq1AIu", 
 "relaxation": "37i9dQZF1DWZhzMp90Opmn", "music": "37i9dQZF1DX4JAvHpjipBk", "busywork": "37i9dQZF1DXcsT4WKI8W8r"};

@@ -5,6 +5,7 @@ const activityQueryURLBase = "http://www.boredapi.com/api/activity?type=";
 const typeIdPair = {"education": "0vvXsWCC9xrXsKd4FyS8kM", "recreational": "37i9dQZF1DXdxcBWuJkbcy", "social": "37i9dQZF1EIdzRg9sDFEY3", 
 "diy": "53d3oOp9lF6uXrG5jFLRqC", "charity": "37i9dQZF1EIgbU0EpV42y4", "cooking": "37i9dQZF1EIcPqD4jq1AIu", 
 "relaxation": "37i9dQZF1DWZhzMp90Opmn", "music": "37i9dQZF1DX4JAvHpjipBk", "busywork": "37i9dQZF1DXcsT4WKI8W8r"};
+let authToken;
 let spotifyReqID;
 let activityType;
 let activity;
@@ -33,17 +34,102 @@ boredapiRequest.addEventListener("load", function (ev) { //step 1
   } else {
     resultElem.innerText = "Oops! That's not a valid type!";
   }
-  spotifyReqID = 0;
-  spotifyapiRequest.open('GET', `${"https://api.spotify.com/v1/playlists/"}${spotifyReqID}`);
-  spotifyapiRequest.setRequestHeader('Authorization', `${"Bearer "}${authToken}`)
+
+  spotifyapiRequest();
 });
 
-const spotifyapiRequest = new XMLHttpRequest();
-spotifyapiRequest.addEventListener("load", function(ev) {
-  const structuredData = JSON.parse(ev.target.responseText);
-  console.log(structuredData);
+async function spotifyapiRequest() {
+  activityType === 'education' ? spotifyReqID = typeIdPair.education :
+  activityType === 'recreational' ? spotifyReqID = typeIdPair.recreational :
+  activityType === 'social' ? spotifyReqID = typeIdPair.social :
+  activityType === 'diy' ? spotifyReqID = typeIdPair.diy :
+  activityType === 'charity' ? spotifyReqID = typeIdPair.charity :
+  activityType === 'cooking' ? spotifyReqID = typeIdPair.cooking :
+  activityType === 'relaxation' ? spotifyReqID = typeIdPair.relaxation :
+  activityType === 'music' ? spotifyReqID = typeIdPair.music :
+  activityType === 'busywork' ? spotifyReqID = typeIdPair.busywork : 0;
 
-});
+  authToken = localStorage.getItem('access_token');
+  let response;
+
+  if (authToken) {
+  response = await fetch(`${"https://api.spotify.com/v1/playlists/"}${spotifyReqID}`, {
+    headers: {
+      Authorization: 'Bearer ' + authToken
+    }
+  });
+  } else {
+    console.log("bad auth token");
+  }
+
+  const data = await response.json();
+  // playlist name = data.name
+  // playlist link = data.external_urls.spotify
+  // playlist img url = data.images[0].url
+}
+
+
+const clientId = '62183f2ce9324f4abbd4c638748fa7bf';
+const redirectUri = 'http://localhost:5500';
+// const redirectUri = 'https://zorgusn.github.io/343p3-BoredSpotify/';
+
+
+
+const urlParams = new URLSearchParams(window.location.search);
+let code = urlParams.get('code');
+ 
+if(!code) {
+  let codeVerifier = generateRandomString(128);
+  localStorage.setItem('code_verifier', codeVerifier);
+  generateCodeChallenge(codeVerifier).then(codeChallenge => {
+
+    let state = generateRandomString(16);
+    let scope = 'user-read-private user-read-email';
+
+
+    let args = new URLSearchParams({
+      response_type: 'code',
+      client_id: clientId,
+      scope: scope,
+      redirect_uri: redirectUri,
+      state: state,
+      code_challenge_method: 'S256',
+      code_challenge: codeChallenge
+    });
+
+    window.location = 'https://accounts.spotify.com/authorize?' + args;
+  });
+
+}else {
+
+  let codeVerifier = localStorage.getItem('code_verifier');
+
+  let body = new URLSearchParams({
+    grant_type: 'authorization_code',
+    code: code,
+    redirect_uri: redirectUri,
+    client_id: clientId,
+    code_verifier: codeVerifier
+  });
+  
+  const response = fetch('https://accounts.spotify.com/api/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: body
+  }).then(response => {
+      if (!response.ok) {
+        throw new Error('HTTP status ' + response.status);
+      }
+      return response.json();
+  }).then(data => {
+    localStorage.setItem('access_token', data.access_token);
+  }).catch(error => {
+      console.error('Error:', error);
+  });
+}
+
 
 function generateRandomString(length) {
   let text = '';
@@ -69,7 +155,3 @@ async function generateCodeChallenge(codeVerifier) {
 
   return base64encode(digest);
 }
-
-
-
-// http://localhost:5500

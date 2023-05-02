@@ -1,5 +1,15 @@
 https://zorgusn.github.io/343p3-BoredSpotify/
 
 My app, when provided with a valid search term (valid terms are provided on the site), queries the BoredAPI
-for an activity that falls under the search term.
-The app then provides a link to a spotify playlist that matches the activity, the link and image is provided by the SpotityAPI.
+for an activity that falls under the search term. The app then queries the Spoify API for a related playlist,
+then displays the playlist image as a link.
+
+responsive: image size changed based on screen size, becomes relative at smaller scale.
+
+uses 2 different APIs: search BoredAPI for an activity, search SpotifyAPI for the link and image of a playlist.
+
+has search: able to search for a particular type of activity.
+
+displays results: displays the activity chosen as well as matching playlist.
+
+filterable: displays a random activity and matching playlist, as there are not multiple results there is no filtering present.
